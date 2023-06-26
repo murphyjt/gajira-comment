@@ -20,6 +20,14 @@ class Jira {
     })
   }
 
+	async getComments (issueId, startAt = 0) {
+		return this.fetch('getComments', {
+			pathname: `/rest/api/2/issue/${issueId}/comment?startAt=${startAt}&orderBy=created`,
+		}, {
+			method: 'GET'
+		})
+	}
+
   async createIssue (body) {
     return this.fetch('createIssue',
       { pathname: '/rest/api/2/issue' },

@@ -37,6 +37,7 @@ async function exec () {
 function parseArgs () {
   return {
     issue: core.getInput('issue'),
+		allowRepeats: core.getInput('allow-repeats'),
     comment: core.getInput('comment')
   }
 }

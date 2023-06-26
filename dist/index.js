@@ -20,7 +20,18 @@ module.exports = class {
 
   async execute () {
     const issueId = this.argv.issue || this.config.issue || null
+    const allowRepeats = this.argv.allowRepeats || this.config.allowRepeats || false
     const { comment } = this.argv
+
+		if (!allowRepeats) {
+			// TODO Add paging
+			console.log(`Searching for existing comment to ${issueId}: \n${comment}`)
+			const comments = await this.Jira.getComments(issueId)
+			if (comments.some(comment => comment.body = comment)) {
+				console.log(`Skipping comment to ${issueId}: \n${comment}`)
+				return {}
+			}
+		}
 
     console.log(`Adding comment to ${issueId}: \n${comment}`)
     await this.Jira.addComment(issueId, { body: comment })
@@ -56,6 +67,14 @@ class Jira {
       body: data,
     })
   }
+
+	async getComments (issueId, startAt = 0) {
+		return this.fetch('getComments', {
+			pathname: `/rest/api/2/issue/${issueId}/comment?startAt=${startAt}&orderBy=created`,
+		}, {
+			method: 'GET'
+		})
+	}
 
   async createIssue (body) {
     return this.fetch('createIssue',
@@ -32498,6 +32517,7 @@ async function exec () {
 function parseArgs () {
   return {
     issue: core.getInput('issue'),
+		allowRepeats: core.getInput('allow-repeats'),
     comment: core.getInput('comment')
   }
 }

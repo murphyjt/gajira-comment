@@ -22,7 +22,7 @@ class Jira {
 
 	async getComments (issueId, startAt = 0) {
 		return this.fetch('getComments', {
-			pathname: `/rest/api/2/issue/${issueId}/comment?startAt=${startAt}&orderBy=created`,
+			pathname: `/rest/api/2/issue/${issueId}/comment`,
 		}, {
 			method: 'GET'
 		})
